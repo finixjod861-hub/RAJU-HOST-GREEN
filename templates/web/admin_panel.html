@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <title>RAJU-CORE | Admin Authority — Jade Nexus</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap');
+    
+    /* ————— PREMIUM GREEN CORE ————— */
+    :root {
+      --bg: #030f08;           /* deep charcoal green-black */
+      --card: rgba(18, 35, 22, 0.68);
+      --accent: #00f593;       /* vivid cyber mint */
+      --blue: #2bd67b;         /* emerald primary */
+      --green: #38e54d;        /* bright leaf */
+      --orange: #ffbc3c;
+      --border: rgba(58, 255, 120, 0.22);
+      --glass: blur(28px) saturate(200%);
+      --neon-glow: 0 0 6px rgba(0, 245, 140, 0.6);
+    }
+
+    body {
+      background: var(--bg); 
+      color: #e6ffe6; 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0; 
+      padding-bottom: 50px;
+      position: relative;
+    }
+
+    /* subtle green noise overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at 20% 30%, rgba(0, 200, 100, 0.03) 0%, rgba(0,0,0,0.2) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .navbar {
+      background: rgba(0, 20, 5, 0.65);
+      backdrop-filter: var(--glass);
+      border-bottom: 0.5px solid var(--border);
+      padding: 15px 20px;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      position: sticky; 
+      top: 0; 
+      z-index: 1000;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .container { 
+      max-width: 800px; 
+      margin: auto; 
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* --- premium monitor cards green touch--- */
+    .monitor-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 12px; 
+      margin-bottom: 25px; 
+    }
+    .stat-pill {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      padding: 15px; 
+      border-radius: 24px;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .stat-pill:hover {
+      border-color: #2eff9e;
+      box-shadow: 0 0 8px rgba(46, 255, 158, 0.3);
+    }
+    .stat-label { 
+      font-size: 10px; 
+      color: #b0ffc0; 
+      font-weight: 700; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-value { 
+      font-size: 18px; 
+      font-weight: 800; 
+      display: block; 
+      margin-top: 4px; 
+      color: #d2ffd6;
+    }
+    
+    .dot { 
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      display: inline-block; 
+      margin-right: 5px; 
+    }
+    .dot-online { 
+      background: var(--green); 
+      box-shadow: 0 0 12px var(--green); 
+      animation: pulse 2s infinite; 
+    }
+    .dot-offline { background: #ff7760; }
+    .dot-suspended { background: var(--orange); box-shadow: 0 0 6px #ffbc3c; }
+
+    @keyframes pulse { 
+      0% { opacity: 1; transform: scale(1);} 
+      50% { opacity: 0.5; transform: scale(0.9);} 
+      100% { opacity: 1; transform: scale(1);} 
+    }
+
+    /* --- User Cards — fresh green glass --- */
+    .user-card {
+      background: var(--card);
+      border-radius: 26px;
+      padding: 18px;
+      margin-bottom: 15px;
+      border: 0.5px solid var(--border);
+      backdrop-filter: blur(6px);
+      transition: all 0.2s;
+    }
+    .user-card:hover {
+      border-color: #3effa0;
+      background: rgba(20, 45, 28, 0.75);
+    }
+    .u-top { display: flex; align-items: center; gap: 15px; }
+    .u-avatar {
+      width: 44px; 
+      height: 44px; 
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d8f4e, #0c4f2a);
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-weight: 800;
+      color: #e5ffea;
+      box-shadow: 0 0 8px #2eff9e66;
+    }
+
+    .badge-row { margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap; }
+    .ios-badge {
+      font-size: 9px; 
+      font-weight: 800; 
+      padding: 3px 9px; 
+      border-radius: 20px; 
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-limit { background: rgba(43, 214, 123, 0.2); color: #b0ffcc; border: 0.3px solid #3effaa; }
+    .badge-active { background: rgba(56, 229, 77, 0.18); color: #79ff8f; border: 0.3px solid #4eff6e; }
+    .badge-banned { background: rgba(255, 100, 70, 0.12); color: #ffad8a; border: 0.3px solid #ff8570; }
+
+    .actions {
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 8px;
+      margin-top: 15px; 
+      border-top: 0.5px solid rgba(80, 255, 120, 0.2); 
+      padding-top: 15px;
+    }
+    .ios-btn {
+      background: rgba(30, 55, 40, 0.5);
+      border: none; 
+      border-radius: 18px;
+      padding: 10px 0; 
+      color: #dbffdd; 
+      cursor: pointer;
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 5px;
+      transition: 0.2s;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+    .ios-btn i { font-size: 16px; }
+    .ios-btn span { font-size: 9px; font-weight: 800; letter-spacing: 0.3px; }
+    .ios-btn:hover {
+      background: #2a9d5e44;
+      color: #eeffdd;
+      transform: scale(0.97);
+      border: 0.2px solid #70ff9e;
+    }
+    .navbar .ios-btn {
+      flex-direction: row;
+      background: #1ba75a;
+      box-shadow: 0 0 8px #15ff7a;
+    }
+    .navbar .ios-btn:hover {
+      background: #2ccf72;
+      transform: scale(0.98);
+    }
+
+    /* custom scroll */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #0a1f0f; }
+    ::-webkit-scrollbar-thumb { background: #2eff9e; border-radius: 8px; }
+
+    /* sweet alert green override */
+    .swal2-popup {
+      border: 1px solid var(--border) !important;
+      box-shadow: 0 0 18px #00ff9922 !important;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div style="font-weight:800; font-size:18px; display: flex; align-items: center; gap: 10px;">
+    <i class="fa-solid fa-leaf" style="color: #2eff9e; text-shadow: 0 0 4px #05ff85;"></i> 
+    <span style="background: linear-gradient(135deg, #c6ffb0, #2eff9e); -webkit-background-clip: text; background-clip: text; color: transparent;">RAJU Authority</span>
+  </div>
+  <button class="ios-btn" style="flex-direction:row; padding:8px 18px; background:var(--blue); border-radius:30px;" onclick="createUser()">
+    <i class="fa-solid fa-plus-circle"></i> <span style="margin-left:6px;">New Identity</span>
+  </button>
+</nav>
+
+<div class="container">
+  <div class="monitor-grid">
+    <div class="stat-pill">
+      <span class="stat-label"><i class="fa-solid fa-network-wired" style="margin-right: 4px;"></i> Active Nodes</span>
+      <span class="stat-value"><span class="dot dot-online"></span> <span id="onlineCount">0</span> Online</span>
+    </div>
+    <div class="stat-pill">
+      <span class="stat-label"><i class="fa-solid fa-diagram-project"></i> Total Servers</span>
+      <span class="stat-value" id="totalSrvCount">0</span>
+    </div>
+    <div class="stat-pill">
+      <span class="stat-label"><i class="fa-solid fa-ban"></i> Suspended</span>
+      <span class="stat-value"><span class="dot dot-suspended"></span> <span id="suspendedCount">0</span> Users</span>
+    </div>
+    <div class="stat-pill">
+      <span class="stat-label"><i class="fa-solid fa-microchip"></i> CPU Usage</span>
+      <span class="stat-value" id="cpuVal">0%</span>
+    </div>
+  </div>
+
+  <div id="userList"></div>
+</div>
+
+<script>
+async function loadData() {
+    try {
+        const r = await fetch('/admin/stats');
+        const d = await r.json();
+        
+        document.getElementById('cpuVal').innerText = d.sys_cpu || "0%";
+        
+        let totalSrv = 0;
+        let onlineSrv = 0;
+        let bannedUsers = 0;
+
+        const list = document.getElementById('userList');
+        list.innerHTML = d.users.map(u => {
+            totalSrv += u.srv_count;
+            onlineSrv += u.active_srvs;
+            if(u.status === 'banned') bannedUsers++;
+
+            // server_limit fallback if missing
+            const limit = u.server_limit !== undefined ? u.server_limit : 1;
+
+            return `
+            <div class="user-card animate__animated animate__fadeIn">
+                <div class="u-top">
+                    <div class="u-avatar"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <div style="flex:1">
+                        <h4 style="margin:0; font-weight:800; letter-spacing:-0.3px;">${escapeHtml(u.fname)}</h4>
+                        <div class="badge-row">
+                            <span class="ios-badge badge-limit"><i class="fa-regular fa-gem" style="font-size:8px;"></i> Limit: ${limit}</span>
+                            <span class="ios-badge ${u.status === 'active' ? 'badge-active' : 'badge-banned'}"><i class="fa-regular ${u.status === 'active' ? 'fa-circle-check' : 'fa-skull'}"></i> ${u.status}</span>
+                        </div>
+                    </div>
+                    <div style="text-align:right; font-size:11px; font-weight:700;">
+                        <div style="color:#4eff7a"><i class="fa-regular fa-circle-check"></i> ${u.active_srvs} ON</div>
+                        <div style="color:#9effb2">${u.srv_count} TOTAL</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="ios-btn" onclick="editPermissions(${u.id}, '${u.role}', ${limit}, '${u.status}')">
+                        <i class="fa-solid fa-sliders-h"></i><span>Limit</span>
+                    </button>
+                    
+                    ${u.status === 'active' ? 
+                        `<button class="ios-btn" style="color:#ffae70" onclick="toggleBan(${u.id}, 'banned')">
+                            <i class="fa-solid fa-user-slash"></i><span>Ban</span>
+                        </button>` : 
+                        `<button class="ios-btn" style="color:#6eff8e" onclick="toggleBan(${u.id}, 'active')">
+                            <i class="fa-solid fa-user-check"></i><span>Unban</span>
+                        </button>`
+                    }
+
+                    <button class="ios-btn" onclick="location.href='/admin/manage-user/${u.id}'">
+                        <i class="fa-solid fa-server"></i><span>Manage</span>
+                    </button>
+                    <button class="ios-btn" style="color:#ff7f6e" onclick="deleteUser(${u.id})">
+                        <i class="fa-solid fa-trash-alt"></i><span>Purge</span>
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('onlineCount').innerText = onlineSrv;
+        document.getElementById('totalSrvCount').innerText = totalSrv;
+        document.getElementById('suspendedCount').innerText = bannedUsers;
+
+    } catch(e) { console.error("Sync Error", e); }
+}
+
+// helper to prevent XSS
+function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+    });
+}
+
+async function toggleBan(id, newStatus) {
+    await fetch('/admin/user/update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ user_id: id, status: newStatus, role: 'free', limit: 1 }) 
+    });
+    loadData();
+}
+
+async function editPermissions(id, role, limit, status) {
+    const { value: form } = await Swal.fire({
+        title: '⚡ Modify Green Permissions',
+        background: '#0c2014', 
+        color: '#d9ffdd',
+        customClass: {
+            popup: 'green-swal'
+        },
+        html: `
+            <div style="text-align:left; color:#adffc9;">Server limit & role control</div>
+            <input id="sw-limit" type="number" class="swal2-input" value="${limit}" style="background:#1e3a27; color:#caffdd; border-radius:12px; border:1px solid #2eff9e;">
+            <select id="sw-role" class="swal2-input" style="background:#1e3a27; color:#caffdd; border-radius:12px; border:1px solid #2eff9e;">
+                <option value="free" ${role==='free'?'selected':''}>🍃 Free</option>
+                <option value="premium" ${role==='premium'?'selected':''}>✨ Premium</option>
+            </select>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#2bdd7a',
+        cancelButtonColor: '#5f5f5f',
+        preConfirm: () => ({
+            user_id: id,
+            limit: document.getElementById('sw-limit').value,
+            role: document.getElementById('sw-role').value,
+            status: status
+        })
+    });
+    if(form) {
+        await fetch('/admin/user/update', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(form)
+        });
+        loadData();
+    }
+}
+
+async function createUser() {
+    const { value: v } = await Swal.fire({
+        title: '🌱 New Neural Identity',
+        background: '#0c2014',
+        color: '#edffea',
+        html: `
+            <input id="n-name" class="swal2-input" placeholder="Full Name" style="background:#1b3223; color:#e2ffde; border-radius:12px;">
+            <input id="n-email" class="swal2-input" placeholder="Email Address" style="background:#1b3223; color:#e2ffde; border-radius:12px;">
+            <input id="n-pass" class="swal2-input" type="password" placeholder="Password" style="background:#1b3223; color:#e2ffde; border-radius:12px;">
+            <input id="n-limit" type="number" class="swal2-input" placeholder="Server Limit" value="1" style="background:#1b3223; color:#e2ffde; border-radius:12px;">
+        `,
+        confirmButtonText: 'Create Identity',
+        confirmButtonColor: '#1fb85d',
+        showCancelButton: true,
+        preConfirm: () => {
+            const name = document.getElementById('n-name').value;
+            const email = document.getElementById('n-email').value;
+            const pass = document.getElementById('n-pass').value;
+            const limit = document.getElementById('n-limit').value;
+            if(!name || !email || !pass) {
+                Swal.showValidationMessage('Name, Email and Password required');
+                return false;
+            }
+            return { name, email, pass, limit };
+        }
+    });
+    if(v) {
+        await fetch('/admin/create-user', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(v) 
+        });
+        loadData();
+    }
+}
+
+async function deleteUser(id) {
+    const res = await Swal.fire({ 
+        title: '⚠️ Purge User?', 
+        text: "This action cannot be undone. All data erased.",
+        icon: 'warning', 
+        background: '#111f14', 
+        color: '#ffddbb', 
+        confirmButtonColor: '#dd5533',
+        showCancelButton: true,
+        cancelButtonColor: '#3a5a48'
+    });
+    if(res.isConfirmed) {
+        await fetch(`/admin/delete-user/${id}`, { method: 'POST' });
+        loadData();
+        Swal.fire('Deleted', 'User record obliterated', 'success');
+    }
+}
+
+setInterval(loadData, 5000);
+loadData();
+</script>
+</body>
+</html>
